@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Pomodoro</title>
+    <!-- Latest compiled and minified CSS -->
+    <!-- Then include bootstrap js -->
+    <!-- Latest compiled and minified JavaScript -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="style/main.css" rel="stylesheet" type="text/css">
+    <style>
+        .section {
+        }
+        #num {
+
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="app" class="container">
+    <div class="jumbotron">
+        <div class="col-md-12 text-center">
+            <h1>{{title}}</h1>
+            <hr />
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 offset-3">
+                <div class="lead-form">
+                    <h1 class="text-center">Fill out the form</h1>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input v-model="startingZip" type="text" class="form-control" placeholder="Starting ZIP" />
+                            <span class="city-span">{{startingCity}}</span>
+                        </div>
+                        <div class="col-md-6">
+                            <input v-model="endingZip" type="text" class="form-control" placeholder="Ending ZIP" />
+                            <span class="city-span">{{endingZip}}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button class="btn btn-primary btn-block" id="submit-form">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.6/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
+
+<script>
+    var app = new Vue({
+        el:'#app',
+        data: {
+            title: "from city to city: ",
+            startingZip:'',
+            endingZip:'',
+            endingCity:'',
+            startingCity:''
+        },
+        watch: {
+            startingZip: function(){
+                this.startingCity = ''
+                if(this.startingZip.length > 4){
+                    this.lookupApi()
+                }
+            }
+        },
+        methods:{
+            lookupApi:_.debounce(function(){
+                var app = this
+                app.startingCity="searching ...."
+                axios.get('http://ziptasticapi.com/' + app.startingZip)
+                        .then(function(response){
+                            app.startingCity = response.data.city + ',' + response.data.state
+                        })
+                        .catch(function(error) {
+                            app.startingCity = "invalid zip code"
+                        })
+            },500)
+        },
+        computed:{
+        }
+    })
+</script>
+</html>
