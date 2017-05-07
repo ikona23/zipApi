@@ -1,5 +1,5 @@
-Freecodecamp advanced Front-end project
-pomodoro - timebox
+Zippy api
 
-Check the result http://timebox.surge.sh/
+
+Check the result http://zippy.surge.sh/
 # zipApi
